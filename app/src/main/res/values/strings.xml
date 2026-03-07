@@ -1,0 +1,148 @@
+<resources>
+    <string name="app_name">Safe Limit Calculator</string>
+
+    <!-- Splash Screen -->
+    <string name="splash_loading">Loading…</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title_1">Calculate Your Safe Daily Limit</string>
+    <string name="onboarding_desc_1">Enter your balance, next income date, and minimum reserve. We\'ll calculate how much you can safely spend each day.</string>
+    <string name="onboarding_title_2">Track Mandatory Payments</string>
+    <string name="onboarding_desc_2">Add all mandatory payments due before your next income. The app automatically adjusts your daily limit.</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_get_started">Get Started</string>
+    <string name="onboarding_skip">Skip</string>
+
+    <!-- Home Screen -->
+    <string name="home_title">Dashboard</string>
+    <string name="home_balance">Balance</string>
+    <string name="home_daily_limit">Daily Safe Limit</string>
+    <string name="home_next_income">Next Income</string>
+    <string name="home_reserve">Reserve</string>
+    <string name="home_upcoming_payments">Upcoming Payments</string>
+    <string name="home_no_payments">No upcoming payments</string>
+    <string name="home_today_spent">Today\'s Spending</string>
+    <string name="home_days_until_income">Days until income</string>
+    <string name="home_update_data">Update Data</string>
+    <string name="home_edit_balance">Edit Balance</string>
+
+    <!-- Expenses Screen -->
+    <string name="expenses_title">Add Expense</string>
+    <string name="expenses_amount">Amount</string>
+    <string name="expenses_category">Category</string>
+    <string name="expenses_description">Description (optional)</string>
+    <string name="expenses_date">Date</string>
+    <string name="expenses_add">Add Expense</string>
+    <string name="expenses_recent">Recent Expenses</string>
+    <string name="expenses_no_expenses">No expenses yet</string>
+    <string name="expenses_limit_warning">This exceeds your daily limit!</string>
+    <string name="expenses_amount_error">Enter a valid amount</string>
+    <string name="expenses_category_error">Select a category</string>
+
+    <!-- Categories -->
+    <string name="category_food">Food</string>
+    <string name="category_transport">Transport</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_shopping">Shopping</string>
+    <string name="category_health">Health</string>
+    <string name="category_utilities">Utilities</string>
+    <string name="category_other">Other</string>
+
+    <!-- Payments Screen -->
+    <string name="payments_title">Mandatory Payments</string>
+    <string name="payments_add">Add Payment</string>
+    <string name="payments_no_payments">No payments scheduled</string>
+    <string name="payments_total">Total Due</string>
+    <string name="payments_paid">Paid</string>
+    <string name="payments_unpaid">Unpaid</string>
+    <string name="payments_due_soon">Due Soon</string>
+    <string name="payments_overdue">Overdue</string>
+
+    <!-- Payment Details -->
+    <string name="payment_details_title">Payment Details</string>
+    <string name="payment_name">Name</string>
+    <string name="payment_amount">Amount</string>
+    <string name="payment_due_date">Due Date</string>
+    <string name="payment_status">Status</string>
+    <string name="payment_mark_paid">Mark as Paid</string>
+    <string name="payment_mark_unpaid">Mark as Unpaid</string>
+    <string name="payment_edit">Edit</string>
+    <string name="payment_delete">Delete</string>
+    <string name="payment_delete_confirm">Delete this payment?</string>
+    <string name="payment_name_error">Enter payment name</string>
+    <string name="payment_amount_error">Enter valid amount</string>
+    <string name="payment_not_found">Payment not found</string>
+
+    <!-- Analytics Screen -->
+    <string name="analytics_title">Analytics</string>
+    <string name="analytics_overview">Spending Overview</string>
+    <string name="analytics_by_category">By Category</string>
+    <string name="analytics_trend">Spending Trend</string>
+    <string name="analytics_planned_vs_actual">Planned vs Actual</string>
+    <string name="analytics_total_spent">Total Spent</string>
+    <string name="analytics_avg_daily">Avg Daily</string>
+    <string name="analytics_forecast">Forecast</string>
+    <string name="analytics_no_data">No data available yet</string>
+    <string name="analytics_period_week">Week</string>
+    <string name="analytics_period_month">Month</string>
+    <string name="analytics_period_all">All Time</string>
+    <string name="analytics_forecast_template">In %1$d day(s): approximately $%2$.2f</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_general">General</string>
+    <string name="settings_data">Data Management</string>
+    <string name="settings_about">About</string>
+    <string name="settings_reserve_amount">Minimum Reserve</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_payment_reminders">Payment Reminders</string>
+    <string name="settings_limit_warnings">Limit Warnings</string>
+    <string name="settings_daily_summary">Daily Summary</string>
+    <string name="settings_reset_data">Reset All Data</string>
+    <string name="settings_reset_confirm">This will delete all your data. Continue?</string>
+    <string name="settings_export_data">Export Data</string>
+    <string name="settings_version">Version</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_expenses">Expenses</string>
+    <string name="nav_payments">Payments</string>
+    <string name="nav_analytics">Analytics</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Common -->
+    <string name="common_save">Save</string>
+    <string name="common_cancel">Cancel</string>
+    <string name="common_back">Back</string>
+    <string name="common_delete">Delete</string>
+    <string name="common_edit">Edit</string>
+    <string name="common_ok">OK</string>
+    <string name="common_yes">Yes</string>
+    <string name="common_no">No</string>
+    <string name="common_loading">Loading…</string>
+    <string name="common_error">Error occurred</string>
+    <string name="common_success">Success</string>
+    <string name="common_today">Today</string>
+    <string name="common_yesterday">Yesterday</string>
+    <string name="common_date_format">MMM dd, yyyy</string>
+    <string name="common_date_format_short">MMM dd</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_update_balance_title">Update Balance</string>
+    <string name="dialog_update_balance_message">Enter your current balance</string>
+    <string name="dialog_update_income_date_title">Update Income Date</string>
+    <string name="dialog_update_income_date_message">When is your next income?</string>
+    <string name="dialog_add_payment_title">Add Payment</string>
+    <string name="dialog_edit_payment_title">Edit Payment</string>
+
+    <!-- Notifications -->
+    <string name="notification_payment_due_title">Payment Due Soon</string>
+    <string name="notification_payment_due_message">%s is due on %s</string>
+    <string name="notification_limit_exceeded_title">Daily Limit Exceeded</string>
+    <string name="notification_limit_exceeded_message">You\'ve exceeded your safe daily limit</string>
+    <string name="notification_update_reminder_title">Update Your Data</string>
+    <string name="notification_update_reminder_message">Don\'t forget to update your balance and income date</string>
+
+    <!-- Snackbar Messages -->
+    <string name="payments_added_success">Payment "%1$s" added</string>
+</resources>

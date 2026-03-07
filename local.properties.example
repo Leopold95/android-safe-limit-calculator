@@ -1,0 +1,16 @@
+# Настройка Java Toolchain для всего проекта
+
+# Если у вас есть JDK 17, укажите путь здесь
+# Раскомментируйте и укажите правильный путь:
+# org.gradle.java.home=C:\\Program Files\\Java\\jdk-17
+
+# Или установите JDK 17 и Android Studio автоматически его найдёт
+
+# Требуется JDK 17 для Kotlin 2.1.0
+# Java 25 НЕ поддерживается!
+
+# Где скачать JDK 17:
+# https://adoptium.net/temurin/releases/?version=17
+
+# После установки перезапустите Android Studio
+
