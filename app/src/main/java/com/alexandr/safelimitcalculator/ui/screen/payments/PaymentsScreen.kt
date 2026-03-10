@@ -39,11 +39,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.alexandr.safelimitcalculator.R
@@ -340,8 +342,10 @@ fun AddPaymentDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = {
-                        name = it
-                        nameError = false
+                        if (it.length <= 50) {
+                            name = it
+                            nameError = false
+                        }
                     },
                     label = { Text(stringResource(R.string.payment_name)) },
                     modifier = Modifier.fillMaxWidth(),
@@ -354,14 +358,17 @@ fun AddPaymentDialog(
 
                 OutlinedTextField(
                     value = amount,
-                    onValueChange = {
-                        amount = it
-                        amountError = false
+                    onValueChange = { newValue ->
+                        if (newValue.length <= 12 && newValue.all { it.isDigit() || it == '.' } && newValue.count { it == '.' } <= 1) {
+                            amount = newValue
+                            amountError = false
+                        }
                     },
                     label = { Text(stringResource(R.string.payment_amount)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     isError = amountError,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     supportingText = if (amountError) {{
                         Text(stringResource(R.string.payment_amount_error))
                     }} else null

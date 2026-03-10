@@ -78,6 +78,12 @@ class PreferencesDataStore(private val context: Context) {
         }
     }
 
+    suspend fun clearAllData() {
+        context.dataStore.edit { preferences ->
+            preferences.clear()
+        }
+    }
+
     companion object {
         private val USER_DATA_KEY = stringPreferencesKey("user_data")
         private val ONBOARDING_SHOWN_KEY = booleanPreferencesKey("onboarding_shown")

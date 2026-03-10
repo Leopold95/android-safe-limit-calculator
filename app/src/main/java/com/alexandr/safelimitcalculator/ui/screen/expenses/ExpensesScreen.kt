@@ -34,9 +34,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.alexandr.safelimitcalculator.R
 import com.alexandr.safelimitcalculator.data.model.Expense
@@ -124,15 +126,18 @@ fun ExpensesScreen(viewModel: ExpensesViewModel = koinViewModel()) {
                 ) {
                     OutlinedTextField(
                         value = amount,
-                        onValueChange = {
-                            amount = it
-                            amountError = false
+                        onValueChange = { newValue ->
+                            if (newValue.length <= 12 && newValue.all { it.isDigit() || it == '.' } && newValue.count { it == '.' } <= 1) {
+                                amount = newValue
+                                amountError = false
+                            }
                         },
                         label = { Text(stringResource(R.string.expenses_amount)) },
                         isError = amountError,
                         supportingText = if (amountError) {{ Text(stringResource(R.string.expenses_amount_error)) }} else null,
                         modifier = Modifier.fillMaxWidth(),
-                        singleLine = true
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                     )
 
                     ExposedDropdownMenuBox(
@@ -174,7 +179,7 @@ fun ExpensesScreen(viewModel: ExpensesViewModel = koinViewModel()) {
 
                     OutlinedTextField(
                         value = description,
-                        onValueChange = { description = it },
+                        onValueChange = { if (it.length <= 100) description = it },
                         label = { Text(stringResource(R.string.expenses_description)) },
                         modifier = Modifier.fillMaxWidth(),
                         maxLines = 2

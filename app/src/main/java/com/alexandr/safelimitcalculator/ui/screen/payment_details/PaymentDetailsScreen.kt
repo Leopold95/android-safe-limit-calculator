@@ -28,9 +28,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.NavController
 import com.alexandr.safelimitcalculator.R
 import com.alexandr.safelimitcalculator.theme.LocalAppTheme
@@ -105,7 +107,7 @@ fun PaymentDetailsScreen(
             ) {
                 OutlinedTextField(
                     value = name,
-                    onValueChange = { name = it; nameError = false },
+                    onValueChange = { if (it.length <= 50) { name = it; nameError = false } },
                     label = { Text(stringResource(R.string.payment_name)) },
                     isError = nameError,
                     supportingText = if (nameError) { { Text(stringResource(R.string.payment_name_error)) } } else null,
@@ -115,12 +117,17 @@ fun PaymentDetailsScreen(
 
                 OutlinedTextField(
                     value = amount,
-                    onValueChange = { amount = it; amountError = false },
+                    onValueChange = { newValue ->
+                        if (newValue.length <= 12 && newValue.all { it.isDigit() || it == '.' } && newValue.count { it == '.' } <= 1) {
+                            amount = newValue; amountError = false
+                        }
+                    },
                     label = { Text(stringResource(R.string.payment_amount)) },
                     isError = amountError,
                     supportingText = if (amountError) { { Text(stringResource(R.string.payment_amount_error)) } } else null,
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
 
                 OutlinedTextField(

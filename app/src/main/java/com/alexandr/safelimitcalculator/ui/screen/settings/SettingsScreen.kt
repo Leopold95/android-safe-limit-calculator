@@ -1,5 +1,10 @@
 package com.alexandr.safelimitcalculator.ui.screen.settings
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,10 +28,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.core.content.ContextCompat
 import com.alexandr.safelimitcalculator.BuildConfig
 import com.alexandr.safelimitcalculator.R
 import com.alexandr.safelimitcalculator.theme.LocalAppTheme
@@ -38,6 +47,47 @@ fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
     val showReserveDialog by viewModel.showReserveDialog.collectAsState()
     val showResetDialog by viewModel.showResetDialog.collectAsState()
+    val context = LocalContext.current
+
+    // Track which toggle triggered the permission request
+    var pendingToggle by remember { mutableStateOf<String?>(null) }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted && pendingToggle != null) {
+            when (pendingToggle) {
+                "payment_reminders" -> viewModel.setPaymentRemindersEnabled(true)
+                "limit_warnings" -> viewModel.setLimitWarningsEnabled(true)
+                "daily_summary" -> viewModel.setDailySummaryEnabled(true)
+            }
+        }
+        pendingToggle = null
+    }
+
+    fun hasNotificationPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            true
+        }
+    }
+
+    fun requestNotificationPermissionAndEnable(toggleKey: String, enableAction: (Boolean) -> Unit, enabled: Boolean) {
+        if (!enabled) {
+            enableAction(false)
+            return
+        }
+        if (hasNotificationPermission()) {
+            enableAction(true)
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            pendingToggle = toggleKey
+            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -106,7 +156,9 @@ fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
                     )
                     Switch(
                         checked = uiState.paymentRemindersEnabled,
-                        onCheckedChange = viewModel::setPaymentRemindersEnabled
+                        onCheckedChange = { enabled ->
+                            requestNotificationPermissionAndEnable("payment_reminders", viewModel::setPaymentRemindersEnabled, enabled)
+                        }
                     )
                 }
 
@@ -122,7 +174,9 @@ fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
                     )
                     Switch(
                         checked = uiState.limitWarningsEnabled,
-                        onCheckedChange = viewModel::setLimitWarningsEnabled
+                        onCheckedChange = { enabled ->
+                            requestNotificationPermissionAndEnable("limit_warnings", viewModel::setLimitWarningsEnabled, enabled)
+                        }
                     )
                 }
 
@@ -138,7 +192,9 @@ fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
                     )
                     Switch(
                         checked = uiState.dailySummaryEnabled,
-                        onCheckedChange = viewModel::setDailySummaryEnabled
+                        onCheckedChange = { enabled ->
+                            requestNotificationPermissionAndEnable("daily_summary", viewModel::setDailySummaryEnabled, enabled)
+                        }
                     )
                 }
             }
@@ -215,9 +271,14 @@ fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
                 ) {
                     OutlinedTextField(
                         value = reserveAmount,
-                        onValueChange = { reserveAmount = it },
+                        onValueChange = { newValue ->
+                            if (newValue.length <= 12 && newValue.all { it.isDigit() || it == '.' } && newValue.count { it == '.' } <= 1) {
+                                reserveAmount = newValue
+                            }
+                        },
                         label = { Text(stringResource(R.string.home_reserve)) },
                         singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         modifier = Modifier.fillMaxWidth()
                     )
                 }

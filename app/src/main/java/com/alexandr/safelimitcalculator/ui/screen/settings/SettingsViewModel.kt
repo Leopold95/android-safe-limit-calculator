@@ -91,12 +91,7 @@ class SettingsViewModel(
 
     fun resetAllData() {
         viewModelScope.launch {
-            repository.expensesFlow.firstOrNull()?.forEach { expense ->
-                repository.deleteExpense(expense)
-            }
-            repository.paymentsFlow.firstOrNull()?.forEach { payment ->
-                repository.deletePayment(payment)
-            }
+            repository.clearAllData()
             hideResetDialog()
         }
     }

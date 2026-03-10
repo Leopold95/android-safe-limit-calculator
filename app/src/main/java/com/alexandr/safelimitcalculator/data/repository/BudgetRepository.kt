@@ -63,6 +63,20 @@ class BudgetRepository(
         paymentDao.delete(payment)
     }
 
+    suspend fun deleteAllExpenses() {
+        expenseDao.deleteAll()
+    }
+
+    suspend fun deleteAllPayments() {
+        paymentDao.deleteAll()
+    }
+
+    suspend fun clearAllData() {
+        deleteAllExpenses()
+        deleteAllPayments()
+        preferencesDataStore.clearAllData()
+    }
+
     suspend fun setPaymentRemindersEnabled(enabled: Boolean) {
         preferencesDataStore.setPaymentRemindersEnabled(enabled)
     }
@@ -76,19 +90,27 @@ class BudgetRepository(
     }
 
     fun getDailyLimitFlow(): Flow<Double> {
-        return combine(userDataFlow, paymentsFlow) { userData, payments ->
-            calculateDailyLimit(userData, payments)
+        return combine(userDataFlow, paymentsFlow, expensesFlow) { userData, payments, expenses ->
+            calculateDailyLimit(userData, payments, expenses)
         }
     }
 
-    private fun calculateDailyLimit(userData: UserData, payments: List<Payment>): Double {
+    private fun calculateDailyLimit(userData: UserData, payments: List<Payment>, expenses: List<Expense>): Double {
         val today = LocalDate.now()
         val daysUntilIncome = ChronoUnit.DAYS.between(today, userData.nextIncomeDate).toInt()
-        if (daysUntilIncome <= 0) return 0.0
+        // Include today: if income is tomorrow, you still have today to spend
+        val effectiveDays = if (daysUntilIncome <= 0) 1 else daysUntilIncome
 
-        val unpaidPayments = payments.filter { !it.isPaid && it.dueDate <= userData.nextIncomeDate }.sumOf { it.amount }
-        val available = userData.balance - unpaidPayments - userData.reserve
-        return if (available > 0) available / daysUntilIncome else 0.0
+        val totalExpenses = expenses
+            .filter { it.date >= today }
+            .sumOf { it.amount }
+
+        val unpaidPayments = payments
+            .filter { !it.isPaid && it.dueDate <= userData.nextIncomeDate }
+            .sumOf { it.amount }
+
+        val available = userData.balance - unpaidPayments - userData.reserve - totalExpenses
+        return if (available > 0) available / effectiveDays else 0.0
     }
 
     fun getTotalSpentFlow(startDate: LocalDate, endDate: LocalDate): Flow<Double?> {

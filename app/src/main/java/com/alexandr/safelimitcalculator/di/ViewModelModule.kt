@@ -9,7 +9,7 @@ import com.alexandr.safelimitcalculator.ui.screen.payment_details.PaymentDetails
 import com.alexandr.safelimitcalculator.ui.screen.payments.PaymentsViewModel
 import com.alexandr.safelimitcalculator.ui.screen.settings.SettingsViewModel
 import com.alexandr.safelimitcalculator.ui.screen.splash.SplashViewModel
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelModule = module {
