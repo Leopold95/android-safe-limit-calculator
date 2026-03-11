@@ -114,10 +114,10 @@ class BudgetRepository(
     }
 
     fun getTotalSpentFlow(startDate: LocalDate, endDate: LocalDate): Flow<Double?> {
-        return expenseDao.getTotalSpent(startDate.toString(), endDate.toString())
+        return expenseDao.getTotalSpent(startDate.toEpochDay(), endDate.toEpochDay())
     }
 
     fun getUnpaidPaymentsBefore(date: LocalDate): Flow<Double?> {
-        return paymentDao.getUnpaidTotalBefore(date.toString())
+        return paymentDao.getUnpaidTotalBefore(date.toEpochDay())
     }
 }

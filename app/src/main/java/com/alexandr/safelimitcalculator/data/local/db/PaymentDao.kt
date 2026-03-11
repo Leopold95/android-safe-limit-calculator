@@ -27,5 +27,5 @@ interface PaymentDao {
     fun getAll(): Flow<List<Payment>>
 
     @Query("SELECT SUM(amount) FROM payments WHERE isPaid = 0 AND dueDate <= :date")
-    fun getUnpaidTotalBefore(date: String): Flow<Double?>
+    fun getUnpaidTotalBefore(date: Long): Flow<Double?>
 }

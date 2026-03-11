@@ -27,5 +27,5 @@ interface ExpenseDao {
     fun getAll(): Flow<List<Expense>>
 
     @Query("SELECT SUM(amount) FROM expenses WHERE date >= :startDate AND date <= :endDate")
-    fun getTotalSpent(startDate: String, endDate: String): Flow<Double?>
+    fun getTotalSpent(startDate: Long, endDate: Long): Flow<Double?>
 }
