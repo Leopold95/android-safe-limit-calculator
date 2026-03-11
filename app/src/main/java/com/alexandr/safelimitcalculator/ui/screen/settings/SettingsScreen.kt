@@ -1,8 +1,12 @@
 package com.alexandr.safelimitcalculator.ui.screen.settings
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -51,6 +55,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
 
     // Track which toggle triggered the permission request
     var pendingToggle by remember { mutableStateOf<String?>(null) }
+    var showPermissionDeniedDialog by remember { mutableStateOf(false) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -60,6 +65,18 @@ fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
                 "payment_reminders" -> viewModel.setPaymentRemindersEnabled(true)
                 "limit_warnings" -> viewModel.setLimitWarningsEnabled(true)
                 "daily_summary" -> viewModel.setDailySummaryEnabled(true)
+            }
+        } else if (!isGranted) {
+            // Permission denied — if rationale is not shown, it means permanently denied
+            val activity = context as? Activity
+            if (activity != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                val shouldShowRationale = activity.shouldShowRequestPermissionRationale(
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
+                if (!shouldShowRationale) {
+                    // Permanently denied — show dialog to open system settings
+                    showPermissionDeniedDialog = true
+                }
             }
         }
         pendingToggle = null
@@ -84,8 +101,17 @@ fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
         if (hasNotificationPermission()) {
             enableAction(true)
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            pendingToggle = toggleKey
-            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            val activity = context as? Activity
+            val shouldShowRationale = activity?.shouldShowRequestPermissionRationale(
+                Manifest.permission.POST_NOTIFICATIONS
+            ) ?: true
+            if (!shouldShowRationale && !hasNotificationPermission()) {
+                // Permanently denied — open system settings directly
+                showPermissionDeniedDialog = true
+            } else {
+                pendingToggle = toggleKey
+                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
         }
     }
 
@@ -318,6 +344,32 @@ fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
             dismissButton = {
                 TextButton(onClick = viewModel::hideResetDialog) {
                     Text(stringResource(R.string.common_no))
+                }
+            }
+        )
+    }
+
+    if (showPermissionDeniedDialog) {
+        AlertDialog(
+            onDismissRequest = { showPermissionDeniedDialog = false },
+            title = { Text(stringResource(R.string.settings_notification_permission_title)) },
+            text = { Text(stringResource(R.string.settings_notification_permission_message)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showPermissionDeniedDialog = false
+                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            data = Uri.fromParts("package", context.packageName, null)
+                        }
+                        context.startActivity(intent)
+                    }
+                ) {
+                    Text(stringResource(R.string.settings_open_settings))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showPermissionDeniedDialog = false }) {
+                    Text(stringResource(R.string.common_cancel))
                 }
             }
         )

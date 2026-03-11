@@ -98,6 +98,9 @@
     <string name="settings_payment_reminders">Payment Reminders</string>
     <string name="settings_limit_warnings">Limit Warnings</string>
     <string name="settings_daily_summary">Daily Summary</string>
+    <string name="settings_notification_permission_title">Permission Required</string>
+    <string name="settings_notification_permission_message">Notification permission has been denied. Please enable it in the app settings to receive notifications.</string>
+    <string name="settings_open_settings">Open Settings</string>
     <string name="settings_reset_data">Reset All Data</string>
     <string name="settings_reset_confirm">This will delete all your data. Continue?</string>
     <string name="settings_export_data">Export Data</string>
